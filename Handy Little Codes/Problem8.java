@@ -38,7 +38,6 @@
 // 6
 // EXPLANATION
 // bbaacc can make the following palindromes: baccab, bcaacb, cbaabc, cabbac, acbbca, abccba.
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -46,8 +45,24 @@ import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 
-public class Problem8 {
-	private static int minimum(int a, int b, int c) {
+public class Problem {
+
+	public static String min(int[][] matrix) {
+        int min = matrix[0][0];
+        int a=0,b=0;
+        for (int col = 0; col < matrix.length; col++) {
+            for (int row = 0; row < matrix[col].length; row++) {
+                if (min > matrix[col][row]) {
+                    min = matrix[col][row];
+                    a=col;
+                    b=row;
+                }
+            }
+        }
+        return (a+","+b);
+    }
+
+	public static int minimum(int a, int b, int c) {
 		return Math.min(Math.min(a, b), c);
 	}
 
@@ -86,38 +101,24 @@ public class Problem8 {
 		if (num != 0) {
 
 			ArrayList<String> hs = new ArrayList<String>();
-
-			int[] list = new int[num];
-			for (int i = 0; i < num; i++) {
-				list[i] = i;
-			}
-			for (int i = 0; i < num; i++) {
-				int min = Integer.MAX_VALUE;
-				int line = 0;
-				boolean eqPassed = false;
-				int count = 0;
-
-				for (int j = num; j < 2 * num; j++) {
-					int tmp = computeLevenshteinDistance(input[i],
+			int[][] dist = new int[num][num];
+			for(int i = 0; i < num; i++){
+				for(int j = num; j < 2 * num; j++){
+					dist[i][j-num]=computeLevenshteinDistance(input[i],
 							input[j]);
-					if(list[j-num]==(j-num)){
-						if (tmp < min) {
-
-								min = tmp;
-//								if(min!=Integer.MAX_VALUE){
-//									list[line]--;
-//								}
-
-								line = j - num;
-								//list[line]++;
-
-						}
-					}
-
 				}
-				list[line]++;
-
-				hs.add(i + "," + line);
+			}
+			for(int i = 0; i < num; i++){
+				String st = min(dist);
+				hs.add(st);
+				int temp = Integer.parseInt(st.substring(0, st.indexOf(",")));
+				for(int j = 0; j < num; j++){
+					dist[temp][j] = Integer.MAX_VALUE;
+				}
+				int temp2 = Integer.parseInt(st.substring(st.indexOf(",")+1));
+				for(int j = 0; j < num; j++){
+					dist[j][temp2] = Integer.MAX_VALUE;
+				}
 			}
 			Collections.sort(hs, new Comparator<String>() {
 				@Override
