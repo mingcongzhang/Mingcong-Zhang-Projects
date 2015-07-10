@@ -1,3 +1,5 @@
+
+
 // Introduction
 //
 // Your teammate tried to fix the bug, but only managed to make it worse! Now the filter will only accept words that are already palindromes.
@@ -86,6 +88,38 @@ public class Problem {
 		return distance[str1.length()][str2.length()];
 	}
 
+	public static ArrayList<String> getSortedMatchlist(String[] a, int b){
+		ArrayList<String> hs = new ArrayList<String>();
+		int num = b;
+		String[] input = a;
+		int[][] dist = new int[num][num];
+		for(int i = 0; i < num; i++){
+			for(int j = num; j < 2 * num; j++){
+				dist[i][j-num]=computeLevenshteinDistance(input[i],
+						input[j]);
+			}
+		}
+		for(int i = 0; i < num; i++){
+			String st = min(dist);
+			hs.add(st);
+			int temp = Integer.parseInt(st.substring(0, st.indexOf(",")));
+			for(int j = 0; j < num; j++){
+				dist[temp][j] = Integer.MAX_VALUE;
+			}
+			int temp2 = Integer.parseInt(st.substring(st.indexOf(",")+1));
+			for(int j = 0; j < num; j++){
+				dist[j][temp2] = Integer.MAX_VALUE;
+			}
+		}
+		Collections.sort(hs, new Comparator<String>() {
+			@Override
+			public int compare(String s1, String s2) {
+				return s1.compareToIgnoreCase(s2);
+			}
+		});
+		return hs;
+	}
+
 	public static void main(String[] args) {
 
 		Scanner stdin = new Scanner(System.in);
@@ -97,38 +131,12 @@ public class Problem {
 		}
 		stdin.close();
 
-		// System.out.println(num);
 		if (num != 0) {
+				ArrayList<String> hs = getSortedMatchlist(input, num);
+				for (String ss : hs) {
+					System.out.println(ss);
+				}
 
-			ArrayList<String> hs = new ArrayList<String>();
-			int[][] dist = new int[num][num];
-			for(int i = 0; i < num; i++){
-				for(int j = num; j < 2 * num; j++){
-					dist[i][j-num]=computeLevenshteinDistance(input[i],
-							input[j]);
-				}
-			}
-			for(int i = 0; i < num; i++){
-				String st = min(dist);
-				hs.add(st);
-				int temp = Integer.parseInt(st.substring(0, st.indexOf(",")));
-				for(int j = 0; j < num; j++){
-					dist[temp][j] = Integer.MAX_VALUE;
-				}
-				int temp2 = Integer.parseInt(st.substring(st.indexOf(",")+1));
-				for(int j = 0; j < num; j++){
-					dist[j][temp2] = Integer.MAX_VALUE;
-				}
-			}
-			Collections.sort(hs, new Comparator<String>() {
-				@Override
-				public int compare(String s1, String s2) {
-					return s1.compareToIgnoreCase(s2);
-				}
-			});
-			for (String ss : hs) {
-				System.out.println(ss);
-			}
 		}
 	}
 }
